@@ -18,11 +18,19 @@ soup = BeautifulSoup(req.content, 'html.parser')
 contents = list(soup.find_all(class_='content_block_title'))
 batch_urls = list(map(lambda x : base_url+x.a.get('href'), contents))
 
+
+
+
+from datetime import datetime
+
+start = datetime.now()
+print('Crawling : {}'.format(start))
 for url in batch_urls[0:9]:
     req = requests.get(url)
     soup = BeautifulSoup(req.content, 'html.parser')
     values = list(soup.find('table').find_all('tr'))
     index = ['Width', 'Height', 'Depth', 'Operating System', 'Brand']
+    #price, release date, xyz length, resolution, brand, operating system, network, status, memory size, weight
     index.append('Model')
 
     sr_temp = pd.Series(dtype=None)
@@ -35,6 +43,6 @@ for url in batch_urls[0:9]:
     device_name = sr_temp.pop('Model')
     database[device_name] = sr_temp
 result = database.T
-
-
-
+end = datetime.now()
+print('Done : {}'.format(start))
+print('Elapsed time : {}'.format(end-start))
